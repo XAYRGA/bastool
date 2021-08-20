@@ -17,7 +17,7 @@ namespace bastool
             Console.WriteLine("!BASTOOL build in debug mode, do not push into release!");
             Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             Console.ForegroundColor = ConsoleColor.Gray;
-            args = ("unpack baby/bas/biribiri.bas").Split(" ");
+            args = ("pack biribiri.json").Split(" ");
 #endif
             cmdarg.cmdargs = args;
             var operation = cmdarg.assertArg(0, "Operation");
@@ -29,7 +29,7 @@ namespace bastool
                     var packOut = cmdarg.tryArg(2, null);
                     if (packOut == null)
                         packOut = $"{Path.GetFileNameWithoutExtension(packFile)}.bas";
-
+                    packBAS(packFile, packOut);
                     break;
                 case "unpack":
                     var unpackFile = cmdarg.assertArg(1, "Input File");
@@ -40,7 +40,12 @@ namespace bastool
                     break;
                 case "help":
                 default:
-                    cmdarg.assert(true, $"Unrecognized task {operation}");
+                    if (operation.Contains(".bas"))
+                        Main(new string[] { "unpack", operation });
+                    else if (operation.Contains(".json"))
+                        Main(new string[] { "pack", operation });
+                    else                  
+                        cmdarg.assert(true, $"Unrecognized task {operation}");
                     break;
             }            
         }
